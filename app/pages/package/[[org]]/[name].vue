@@ -395,7 +395,7 @@ const repositoryUrl = computed(() => {
 const { meta: repoMeta, repoRef, stars, starsLink, forks, forksLink } = useRepoMeta(repositoryUrl)
 
 const PROVIDER_ICONS: Record<string, string> = {
-  github: 'i-carbon:logo-github',
+  github: 'i-simple-icons:github',
   gitlab: 'i-simple-icons:gitlab',
   bitbucket: 'i-simple-icons:bitbucket',
   codeberg: 'i-simple-icons:codeberg',
@@ -404,13 +404,13 @@ const PROVIDER_ICONS: Record<string, string> = {
   gitee: 'i-simple-icons:gitee',
   sourcehut: 'i-simple-icons:sourcehut',
   tangled: 'i-custom:tangled',
-  radicle: 'i-carbon:network-3', // Radicle is a P2P network, using network icon
+  radicle: 'i-lucide:network', // Radicle is a P2P network, using network icon
 }
 
 const repoProviderIcon = computed(() => {
   const provider = repoRef.value?.provider
-  if (!provider) return 'i-carbon:logo-github'
-  return PROVIDER_ICONS[provider] ?? 'i-carbon:code'
+  if (!provider) return 'i-simple-icons:github'
+  return PROVIDER_ICONS[provider] ?? 'i-lucide:code'
 })
 
 const homepageUrl = computed(() => {
@@ -692,7 +692,7 @@ const showSkeleton = shallowRef(false)
               :aria-label="copiedPkgName ? $t('common.copied') : $t('package.copy_name')"
             >
               <span
-                :class="copiedPkgName ? 'i-carbon:checkmark' : 'i-carbon:copy'"
+                :class="copiedPkgName ? 'i-lucide:check' : 'i-lucide:copy'"
                 class="w-3.5 h-3.5"
                 aria-hidden="true"
               />
@@ -706,7 +706,7 @@ const showSkeleton = shallowRef(false)
             <!-- Version resolution indicator (e.g., "latest → 4.2.0") -->
             <template v-if="requestedVersion && resolvedVersion !== requestedVersion">
               <span class="font-mono text-fg-muted text-sm" dir="ltr">{{ requestedVersion }}</span>
-              <span class="i-carbon:arrow-right rtl-flip w-3 h-3" aria-hidden="true" />
+              <span class="i-lucide:arrow-right rtl-flip w-3 h-3" aria-hidden="true" />
             </template>
 
             <LinkBase
@@ -735,7 +735,7 @@ const showSkeleton = shallowRef(false)
                   size="small"
                   to="#provenance"
                   :aria-label="$t('package.provenance_section.view_more_details')"
-                  classicon="i-lucide-shield-check"
+                  classicon="i-lucide:shield-check"
                 />
               </TooltipApp>
             </template>
@@ -760,7 +760,7 @@ const showSkeleton = shallowRef(false)
               v-if="docsLink"
               :to="docsLink"
               aria-keyshortcuts="d"
-              classicon="i-carbon:document"
+              classicon="i-lucide:file-text"
             >
               {{ $t('package.links.docs') }}
             </LinkBase>
@@ -769,7 +769,7 @@ const showSkeleton = shallowRef(false)
               variant="button-secondary"
               :to="codeLink"
               aria-keyshortcuts="."
-              classicon="i-carbon:code"
+              classicon="i-lucide:code"
             >
               {{ $t('package.links.code') }}
             </LinkBase>
@@ -777,7 +777,7 @@ const showSkeleton = shallowRef(false)
               variant="button-secondary"
               :to="{ name: 'compare', query: { packages: pkg.name } }"
               aria-keyshortcuts="c"
-              classicon="i-carbon:compare"
+              classicon="i-lucide:git-compare"
             >
               {{ $t('package.links.compare') }}
             </LinkBase>
@@ -818,13 +818,13 @@ const showSkeleton = shallowRef(false)
                 :aria-pressed="likesData?.userHasLiked"
                 :classicon="
                   likesData?.userHasLiked
-                    ? 'i-lucide-heart-minus text-red-500'
-                    : 'i-lucide-heart-plus'
+                    ? 'i-lucide:heart-minus text-red-500'
+                    : 'i-lucide:heart-plus'
                 "
               >
                 <span
                   v-if="isLoadingLikeData"
-                  class="i-carbon-circle-dash w-3 h-3 motion-safe:animate-spin my-0.5"
+                  class="i-svg-spinners:ring-resize w-3 h-3 my-0.5"
                   aria-hidden="true"
                 />
                 <span v-else>
@@ -862,23 +862,23 @@ const showSkeleton = shallowRef(false)
               </LinkBase>
             </li>
             <li v-if="repositoryUrl && repoMeta && starsLink">
-              <LinkBase :to="starsLink" classicon="i-carbon:star">
+              <LinkBase :to="starsLink" classicon="i-lucide:star">
                 {{ compactNumberFormatter.format(stars) }}
               </LinkBase>
             </li>
             <li v-if="forks && forksLink">
-              <LinkBase :to="forksLink" classicon="i-carbon:fork">
+              <LinkBase :to="forksLink" classicon="i-lucide:git-fork">
                 {{ compactNumberFormatter.format(forks) }}
               </LinkBase>
             </li>
             <li class="basis-full sm:hidden" />
             <li v-if="homepageUrl">
-              <LinkBase :to="homepageUrl" classicon="i-carbon:link">
+              <LinkBase :to="homepageUrl" classicon="i-lucide:link">
                 {{ $t('package.links.homepage') }}
               </LinkBase>
             </li>
             <li v-if="displayVersion?.bugs?.url">
-              <LinkBase :to="displayVersion.bugs.url" classicon="i-carbon:warning">
+              <LinkBase :to="displayVersion.bugs.url" classicon="i-lucide:circle-alert">
                 {{ $t('package.links.issues') }}
               </LinkBase>
             </li>
@@ -886,7 +886,7 @@ const showSkeleton = shallowRef(false)
               <LinkBase
                 :to="`https://www.npmjs.com/package/${pkg.name}`"
                 :title="$t('common.view_on_npm')"
-                classicon="i-carbon:logo-npm"
+                classicon="i-simple-icons:npm"
               >
                 npm
               </LinkBase>
@@ -901,7 +901,7 @@ const showSkeleton = shallowRef(false)
               </LinkBase>
             </li>
             <li v-if="fundingUrl">
-              <LinkBase :to="fundingUrl" classicon="i-carbon:favorite">
+              <LinkBase :to="fundingUrl" classicon="i-lucide:heart">
                 {{ $t('package.links.fund') }}
               </LinkBase>
             </li>
@@ -962,10 +962,7 @@ const showSkeleton = shallowRef(false)
                       "
                       class="inline-flex items-center gap-1 text-fg-subtle"
                     >
-                      <span
-                        class="i-carbon:circle-dash w-3 h-3 motion-safe:animate-spin"
-                        aria-hidden="true"
-                      />
+                      <span class="i-svg-spinners:ring-resize w-3 h-3" aria-hidden="true" />
                     </span>
                     <span v-else-if="totalDepsCount !== null">{{
                       numberFormatter.format(totalDepsCount)
@@ -983,7 +980,7 @@ const showSkeleton = shallowRef(false)
                   size="small"
                   :to="`https://npmgraph.js.org/?q=${pkg.name}`"
                   :title="$t('package.stats.view_dependency_graph')"
-                  classicon="i-carbon:network-3"
+                  classicon="i-lucide:network -rotate-90"
                 >
                   <span class="sr-only">{{ $t('package.stats.view_dependency_graph') }}</span>
                 </LinkBase>
@@ -993,7 +990,7 @@ const showSkeleton = shallowRef(false)
                   size="small"
                   :to="`https://node-modules.dev/grid/depth#install=${pkg.name}${resolvedVersion ? `@${resolvedVersion}` : ''}`"
                   :title="$t('package.stats.inspect_dependency_tree')"
-                  classicon="i-carbon:tree-view"
+                  classicon="i-lucide:table"
                 >
                   <span class="sr-only">{{ $t('package.stats.inspect_dependency_tree') }}</span>
                 </LinkBase>
@@ -1009,7 +1006,7 @@ const showSkeleton = shallowRef(false)
                   tabindex="0"
                   class="inline-flex items-center justify-center min-w-6 min-h-6 -m-1 p-1 text-fg-subtle cursor-help focus-visible:outline-2 focus-visible:outline-accent/70 rounded"
                 >
-                  <span class="i-carbon:information w-3 h-3" aria-hidden="true" />
+                  <span class="i-lucide:info w-3 h-3" aria-hidden="true" />
                 </span>
               </TooltipApp>
             </dt>
@@ -1030,10 +1027,7 @@ const showSkeleton = shallowRef(false)
                   v-if="installSizeStatus === 'pending'"
                   class="inline-flex items-center gap-1 text-fg-subtle"
                 >
-                  <span
-                    class="i-carbon:circle-dash w-3 h-3 motion-safe:animate-spin"
-                    aria-hidden="true"
-                  />
+                  <span class="i-svg-spinners:ring-resize w-3 h-3" aria-hidden="true" />
                 </span>
                 <span v-else-if="installSize?.totalSize" dir="ltr">
                   {{ bytesFormatter.format(installSize.totalSize) }}
@@ -1053,17 +1047,14 @@ const showSkeleton = shallowRef(false)
                 v-if="vulnTreeStatus === 'pending' || vulnTreeStatus === 'idle'"
                 class="inline-flex items-center gap-1 text-fg-subtle"
               >
-                <span
-                  class="i-carbon:circle-dash w-3 h-3 motion-safe:animate-spin"
-                  aria-hidden="true"
-                />
+                <span class="i-svg-spinners:ring-resize w-3 h-3" aria-hidden="true" />
               </span>
               <span v-else-if="vulnTreeStatus === 'success'">
                 <span v-if="hasVulnerabilities" class="text-amber-700 dark:text-amber-500">
                   {{ numberFormatter.format(vulnCount) }}
                 </span>
                 <span v-else class="inline-flex items-center gap-1 text-fg-muted">
-                  <span class="i-carbon:checkmark w-3 h-3" aria-hidden="true" />
+                  <span class="i-lucide:check w-3 h-3" aria-hidden="true" />
                   {{ numberFormatter.format(0) }}
                 </span>
               </span>
@@ -1149,7 +1140,7 @@ const showSkeleton = shallowRef(false)
             class="mb-4 rounded-lg border border-amber-600/40 bg-amber-500/10 px-4 py-3 text-amber-700 dark:text-amber-400"
           >
             <h3 class="m-0 flex items-center gap-2 font-mono text-sm font-medium">
-              <span class="i-carbon:warning-alt w-4 h-4 shrink-0" aria-hidden="true" />
+              <span class="i-lucide:circle-alert w-4 h-4 shrink-0" aria-hidden="true" />
               {{ $t('package.security_downgrade.title') }}
             </h3>
             <p class="mt-2 mb-0 text-sm">
@@ -1169,7 +1160,7 @@ const showSkeleton = shallowRef(false)
                     rel="noopener noreferrer"
                     class="inline-flex items-center gap-1 rounded-sm underline underline-offset-4 decoration-amber-600/60 dark:decoration-amber-400/50 hover:decoration-fg focus-visible:decoration-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 transition-colors"
                     >{{ $t('package.security_downgrade.provenance_link_text')
-                    }}<span class="i-carbon-launch w-3 h-3" aria-hidden="true"
+                    }}<span class="i-lucide:external-link w-3 h-3" aria-hidden="true"
                   /></a>
                 </template>
               </i18n-t>
@@ -1189,7 +1180,7 @@ const showSkeleton = shallowRef(false)
                     rel="noopener noreferrer"
                     class="inline-flex items-center gap-1 rounded-sm underline underline-offset-4 decoration-amber-600/60 dark:decoration-amber-400/50 hover:decoration-fg focus-visible:decoration-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 transition-colors"
                     >{{ $t('package.security_downgrade.trusted_publishing_link_text')
-                    }}<span class="i-carbon-launch w-3 h-3" aria-hidden="true"
+                    }}<span class="i-lucide:external-link w-3 h-3" aria-hidden="true"
                   /></a>
                 </template>
               </i18n-t>
@@ -1209,7 +1200,7 @@ const showSkeleton = shallowRef(false)
                     rel="noopener noreferrer"
                     class="inline-flex items-center gap-1 rounded-sm underline underline-offset-4 decoration-amber-600/60 dark:decoration-amber-400/50 hover:decoration-fg focus-visible:decoration-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 transition-colors"
                     >{{ $t('package.security_downgrade.provenance_link_text')
-                    }}<span class="i-carbon-launch w-3 h-3" aria-hidden="true"
+                    }}<span class="i-lucide:external-link w-3 h-3" aria-hidden="true"
                   /></a>
                 </template>
                 <template #trustedPublishing>
@@ -1219,7 +1210,7 @@ const showSkeleton = shallowRef(false)
                     rel="noopener noreferrer"
                     class="inline-flex items-center gap-1 rounded-sm underline underline-offset-4 decoration-amber-600/60 dark:decoration-amber-400/50 hover:decoration-fg focus-visible:decoration-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 transition-colors"
                     >{{ $t('package.security_downgrade.trusted_publishing_link_text')
-                    }}<span class="i-carbon-launch w-3 h-3" aria-hidden="true"
+                    }}<span class="i-lucide:external-link w-3 h-3" aria-hidden="true"
                   /></a>
                 </template>
               </i18n-t>
@@ -1284,7 +1275,7 @@ const showSkeleton = shallowRef(false)
                 :aria-label="
                   copiedReadme ? $t('common.copied') : $t('package.readme.copy_as_markdown')
                 "
-                :classicon="copiedReadme ? 'i-carbon:checkmark' : 'i-simple-icons:markdown'"
+                :classicon="copiedReadme ? 'i-lucide:check' : 'i-simple-icons:markdown'"
               >
                 {{ copiedReadme ? $t('common.copied') : $t('common.copy') }}
               </ButtonBase>
@@ -1320,10 +1311,7 @@ const showSkeleton = shallowRef(false)
             v-if="provenanceStatus === 'pending'"
             class="mt-8 flex items-center gap-2 text-fg-subtle text-sm"
           >
-            <span
-              class="i-carbon-circle-dash w-4 h-4 motion-safe:animate-spin"
-              aria-hidden="true"
-            />
+            <span class="i-svg-spinners:ring-resize w-4 h-4" aria-hidden="true" />
             <span>{{ $t('package.provenance_section.title') }}…</span>
           </div>
           <PackageProvenanceSection
@@ -1336,7 +1324,7 @@ const showSkeleton = shallowRef(false)
             v-else-if="provenanceStatus === 'error'"
             class="mt-8 flex items-center gap-2 text-fg-subtle text-sm"
           >
-            <span class="i-carbon:warning w-4 h-4" aria-hidden="true" />
+            <span class="i-lucide:circle-alert w-4 h-4" aria-hidden="true" />
             <span>{{ $t('package.provenance_section.error_loading') }}</span>
           </div>
         </section>
