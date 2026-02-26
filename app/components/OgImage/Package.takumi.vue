@@ -28,10 +28,7 @@ if (
   })
 }
 
-const { data: pkg, refresh: refreshPkg } = usePackage(
-  name,
-  () => resolvedVersion.value ?? version,
-)
+const { data: pkg, refresh: refreshPkg } = usePackage(name, () => resolvedVersion.value ?? version)
 const displayVersion = computed(() => pkg.value?.requestedVersion ?? null)
 
 const repositoryUrl = computed(() => {
@@ -48,9 +45,7 @@ const repositoryUrl = computed(() => {
 const { repoRef, stars, refresh: refreshRepoMeta } = useRepoMeta(repositoryUrl)
 
 const compactFormat = new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 })
-const formattedStars = computed(() =>
-  stars.value > 0 ? compactFormat.format(stars.value) : '',
-)
+const formattedStars = computed(() => (stars.value > 0 ? compactFormat.format(stars.value) : ''))
 
 const { name: siteName } = useSiteConfig()
 
@@ -73,7 +68,9 @@ async function fetchWeeklyEvolution() {
   if (!pkgName) return
 
   const today = new Date()
-  const end = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - 1))
+  const end = new Date(
+    Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - 1),
+  )
   const start = new Date(end.getTime() - (52 * 7 - 1) * 86400000)
 
   const startIso = start.toISOString().slice(0, 10)
@@ -89,7 +86,11 @@ async function fetchWeeklyEvolution() {
 }
 
 // Flatten file tree into renderable rows for code-tree variant
-interface TreeRow { name: string; depth: number; isDir: boolean }
+interface TreeRow {
+  name: string
+  depth: number
+  isDir: boolean
+}
 const treeRows = shallowRef<TreeRow[]>([])
 
 async function fetchCodeTree() {
@@ -125,7 +126,11 @@ async function fetchCodeTree() {
 }
 
 // Parse docs TOC HTML to extract API symbols for function-tree variant
-interface SymbolRow { name: string; kind: 'section' | 'symbol'; icon: string }
+interface SymbolRow {
+  name: string
+  kind: 'section' | 'symbol'
+  icon: string
+}
 const symbolRows = shallowRef<SymbolRow[]>([])
 
 const KIND_ICONS: Record<string, string> = {
@@ -142,9 +147,9 @@ async function fetchFunctionTree() {
   const ver = resolvedVersion.value ?? version
   if (!name || !ver) return
 
-  const resp = await $fetch<{ toc: string | null }>(
-    `/api/registry/docs/${name}/v/${ver}`,
-  ).catch(() => null)
+  const resp = await $fetch<{ toc: string | null }>(`/api/registry/docs/${name}/v/${ver}`).catch(
+    () => null,
+  )
   if (!resp?.toc) return
 
   const rows: SymbolRow[] = []
@@ -183,10 +188,7 @@ function fetchVariantData() {
 }
 
 try {
-  await Promise.all([
-    refreshPkg().then(() => refreshRepoMeta()),
-    fetchVariantData(),
-  ])
+  await Promise.all([refreshPkg().then(() => refreshRepoMeta()), fetchVariantData()])
 } catch (err) {
   console.warn('[og-image-package] Failed to load data server-side:', err)
   throw createError({
@@ -233,22 +235,36 @@ const sparklineSrc = computed(() => {
 
 <template>
   <div class="flex flex-col justify-center w-full bg-bg text-fg relative overflow-hidden font-sans">
-    <div class="absolute -top-10 left-12 size-[700px] rounded-full blur-3xl bg-fg/3" />
+    <div class="absolute -top-10 force-left-12 size-[700px] rounded-full blur-3xl bg-fg/3" />
 
     <div class="p-15 flex flex-col gap-12">
       <div class="flex gap-4">
-        <img src="/logo.svg" width="60" height="60" alt="npmx logo">
+        <img src="/logo.svg" width="60" height="60" alt="npmx logo" />
         <h1 class="text-5xl tracking-tighter font-mono">{{ siteName }}</h1>
       </div>
 
       <div class="flex flex-col max-w-full gap-3">
-        <div v-if="pkgOrg" class="lg:text-5xl text-3xl opacity-50 font-mono tracking-tight leading-none" :style="{ textOverflow: 'ellipsis', lineClamp: 1 }">
+        <div
+          v-if="pkgOrg"
+          class="lg:text-5xl text-3xl opacity-50 font-mono tracking-tight leading-none"
+          :style="{ textOverflow: 'ellipsis', lineClamp: 1 }"
+        >
           {{ pkgOrg }}
         </div>
-        <div class="tracking-tighter font-mono leading-none overflow-hidden" :class="(pkgShortName?.length ?? 0) > 20 ? 'lg:text-6xl text-4xl' : 'lg:text-7xl text-5xl'" :style="{ textOverflow: 'ellipsis', lineClamp: 1, wordBreak: 'break-all' }">
+        <div
+          class="tracking-tighter font-mono leading-none overflow-hidden"
+          :class="
+            (pkgShortName?.length ?? 0) > 20 ? 'lg:text-6xl text-4xl' : 'lg:text-7xl text-5xl'
+          "
+          :style="{ textOverflow: 'ellipsis', lineClamp: 1, wordBreak: 'break-all' }"
+        >
           {{ pkgShortName }}
         </div>
-        <div v-if="version" class="pt-3 lg:text-4xl text-3xl opacity-70 font-mono tracking-tight leading-none" :style="{ textOverflow: 'ellipsis', lineClamp: 1 }">
+        <div
+          v-if="version"
+          class="pt-3 lg:text-4xl text-3xl opacity-70 font-mono tracking-tight leading-none"
+          :style="{ textOverflow: 'ellipsis', lineClamp: 1 }"
+        >
           v{{ version }}
         </div>
       </div>
@@ -267,7 +283,11 @@ const sparklineSrc = computed(() => {
           <span>{{ formattedStars }}</span>
         </span>
 
-        <div v-if="pkg?.license && !pkg.license.includes(' ')" class="flex items-center gap-2" data-testid="license">
+        <div
+          v-if="pkg?.license && !pkg.license.includes(' ')"
+          class="flex items-center gap-2"
+          data-testid="license"
+        >
           <div class="i-lucide:scale w-8 h-8 text-fg-subtle flex-shrink-0 self-center" />
           <span>{{ pkg.license }}</span>
         </div>
@@ -278,13 +298,13 @@ const sparklineSrc = computed(() => {
     <img
       v-if="variant === 'download-chart' && sparklineSrc"
       :src="sparklineSrc"
-      class="absolute left-0 bottom-0 w-full h-[65%] opacity-45"
-    >
+      class="absolute force-left-0 bottom-0 w-full h-[65%] opacity-45"
+    />
 
     <!-- Code tree variant -->
     <div
       v-if="variant === 'code-tree' && treeRows.length"
-      class="absolute right-8 top-8 bottom-8 w-[340px] flex flex-col gap-0 opacity-25 overflow-hidden font-mono text-[18px] leading-[28px]"
+      class="absolute force-right-8 top-8 bottom-8 w-[340px] flex flex-col gap-0 opacity-25 overflow-hidden font-mono text-4.5 leading-7"
     >
       <div
         v-for="(row, i) in treeRows"
@@ -292,7 +312,10 @@ const sparklineSrc = computed(() => {
         class="flex items-center whitespace-nowrap text-fg"
         :style="{ paddingLeft: `${row.depth * 20}px` }"
       >
-        <span class="w-5 h-5 shrink-0 mr-1.5" :class="row.isDir ? 'i-lucide:folder' : 'i-lucide:file'" />
+        <span
+          class="w-5 h-5 shrink-0 force-mr-1.5"
+          :class="row.isDir ? 'i-lucide:folder' : 'i-lucide:file'"
+        />
         <span>{{ row.name }}</span>
       </div>
     </div>
@@ -300,7 +323,7 @@ const sparklineSrc = computed(() => {
     <!-- Function tree variant (API symbols) -->
     <div
       v-if="variant === 'function-tree' && symbolRows.length"
-      class="absolute right-8 top-8 bottom-8 w-[340px] flex flex-col gap-0 opacity-25 overflow-hidden font-mono text-[18px] leading-[28px]"
+      class="absolute force-right-8 top-8 bottom-8 w-[340px] flex flex-col gap-0 opacity-25 overflow-hidden font-mono text-4.5 leading-7"
     >
       <div
         v-for="(row, i) in symbolRows"
@@ -310,10 +333,10 @@ const sparklineSrc = computed(() => {
       >
         <span
           v-if="row.kind === 'symbol'"
-          class="w-5 h-5 shrink-0 mr-1.5"
+          class="w-5 h-5 shrink-0 force-mr-1.5"
           :class="row.icon"
         />
-        <span :class="row.kind === 'section' ? 'opacity-60 text-[16px] mt-1' : ''">{{ row.name }}</span>
+        <span :class="row.kind === 'section' ? 'opacity-60 text-4 mt-1' : ''">{{ row.name }}</span>
       </div>
     </div>
   </div>

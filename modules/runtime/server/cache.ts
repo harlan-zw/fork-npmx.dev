@@ -253,14 +253,14 @@ function getMockForUrl(url: string): MockResult | null {
 
       const base = (s % 40_000) + 500
       // Trend: some packages grow, some shrink, some flat
-      const trendSlope = ((s >> 4) % 200 - 100) / 100_000 // -0.001 .. +0.001 per day
+      const trendSlope = (((s >> 4) % 200) - 100) / 100_000 // -0.001 .. +0.001 per day
       // Wave period varies per package (20-60 days)
-      const wavePeriod = 20 + (s >> 8) % 40
+      const wavePeriod = 20 + ((s >> 8) % 40)
       const waveAmp = 0.1 + ((s >> 12) % 30) / 100 // 0.10 .. 0.40
       // Weekend dip intensity
       const weekendDip = 0.3 + ((s >> 16) % 40) / 100 // 0.30 .. 0.70
 
-      const downloads: { day: string, downloads: number }[] = []
+      const downloads: { day: string; downloads: number }[] = []
       const start = new Date(startDate!)
       const end = new Date(endDate!)
       for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
@@ -270,8 +270,11 @@ function getMockForUrl(url: string): MockResult | null {
         const wave = Math.sin((i * 2 * Math.PI) / wavePeriod) * waveAmp
         const noise = Math.sin(i * 7 + s) * 0.05
         const dow = d.getDay()
-        const weekend = (dow === 0 || dow === 6) ? (1 - weekendDip) : 1
-        downloads.push({ day, downloads: Math.max(0, Math.round(base * trend * (1 + wave + noise) * weekend)) })
+        const weekend = dow === 0 || dow === 6 ? 1 - weekendDip : 1
+        downloads.push({
+          day,
+          downloads: Math.max(0, Math.round(base * trend * (1 + wave + noise) * weekend)),
+        })
       }
       return { data: { downloads, start: startDate, end: endDate, package: packageName } }
     }

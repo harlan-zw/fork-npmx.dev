@@ -89,14 +89,15 @@ const navExtraOffsetStyle = computed(() => ({
 
 const { packageName, requestedVersion, orgName } = usePackageRoute()
 
-defineOgImage('Package.takumi', {
-  name: () => packageName.value,
-  version: () => requestedVersion.value,
-  variant: 'download-chart'
-}, [
-  { key: 'og' },
-  { key: 'whatsapp', width: 800, height: 800 },
-])
+defineOgImage(
+  'Package.takumi',
+  {
+    name: () => packageName.value,
+    version: () => requestedVersion.value,
+    variant: 'download-chart',
+  },
+  [{ key: 'og' }, { key: 'whatsapp', width: 800, height: 800 }],
+)
 
 if (import.meta.server) {
   assertValidPackageName(packageName.value)

@@ -10,7 +10,9 @@ useSeoMeta({
 
 defineOgImage('Page.takumi', {
   title: () => $t('a11y.title'),
-  description: () => $t('a11y.welcome', { app: 'npmx' }),
+  description: () =>
+    'erwtfggk890i4e  5rg8904e5r890g8954g8dcf  jk458jg8945j8gwrg 4we5ghj987u4e5jg 8794j5897gj4 895jg9845j89gjtj' +
+    $t('a11y.welcome', { app: 'npmx' }),
 })
 
 const router = useRouter()

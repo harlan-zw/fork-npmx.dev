@@ -1,12 +1,11 @@
 import { mockNuxtImport, mountSuspended, registerEndpoint } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 
-const { mockUseResolvedVersion, mockUsePackage, mockUseRepoMeta } =
-  vi.hoisted(() => ({
-    mockUseResolvedVersion: vi.fn(),
-    mockUsePackage: vi.fn(),
-    mockUseRepoMeta: vi.fn(),
-  }))
+const { mockUseResolvedVersion, mockUsePackage, mockUseRepoMeta } = vi.hoisted(() => ({
+  mockUseResolvedVersion: vi.fn(),
+  mockUsePackage: vi.fn(),
+  mockUseRepoMeta: vi.fn(),
+}))
 
 mockNuxtImport('useResolvedVersion', () => mockUseResolvedVersion)
 mockNuxtImport('usePackage', () => mockUsePackage)
@@ -28,6 +27,7 @@ describe('OgImagePackage', () => {
   const baseProps = {
     name: 'test-package',
     version: '1.0.0',
+    variant: 'download-chart' as const,
   }
 
   function setupMocks(
@@ -37,11 +37,7 @@ describe('OgImagePackage', () => {
       packageName?: string
     } = {},
   ) {
-    const {
-      stars = 0,
-      license = 'MIT',
-      packageName = 'test-package',
-    } = overrides
+    const { stars = 0, license = 'MIT', packageName = 'test-package' } = overrides
 
     mockUseResolvedVersion.mockReturnValue({
       data: ref('1.0.0'),

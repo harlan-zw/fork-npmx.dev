@@ -13,12 +13,18 @@ const testCases = [
   // Default OG image template
   { path: '/', label: 'home page' },
 
+  // Page OG image template
+  { path: '/accessibility', label: 'page' },
+
   // Package OG image template — covers key visual edge cases
   { path: '/package/vue', label: 'unscoped package' },
   { path: '/package/nuxt/v/4.3.1', label: 'unscoped with explicit version' },
   { path: '/package/@nuxt/kit', label: 'scoped package' },
   { path: '/package/@anthropic-ai/claude-code', label: 'scoped with long name' },
-  { path: '/package/@babel/plugin-transform-exponentiation-operator', label: 'extremely long name' },
+  {
+    path: '/package/@babel/plugin-transform-exponentiation-operator',
+    label: 'extremely long name',
+  },
 
   // Package code-tree variant (file tree decoration)
   { path: '/package-code/vue/v/3.5.27', label: 'code-tree variant' },
@@ -32,7 +38,10 @@ for (const { path, label } of testCases) {
     test(`og image snapshot`, async ({ page, goto, baseURL }) => {
       await goto(path, { waitUntil: 'domcontentloaded' })
 
-      const ogImageUrl = await page.locator('meta[property="og:image"]').first().getAttribute('content')
+      const ogImageUrl = await page
+        .locator('meta[property="og:image"]')
+        .first()
+        .getAttribute('content')
       expect(ogImageUrl).toBeTruthy()
 
       const ogImagePath = new URL(ogImageUrl!).pathname

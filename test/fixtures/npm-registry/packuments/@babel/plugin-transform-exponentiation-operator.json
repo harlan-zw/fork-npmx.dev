@@ -102,9 +102,7 @@
     "7.28.6": {
       "name": "@babel/plugin-transform-exponentiation-operator",
       "version": "7.28.6",
-      "keywords": [
-        "babel-plugin"
-      ],
+      "keywords": ["babel-plugin"],
       "author": "The Babel Team (https://babel.dev/team)",
       "license": "MIT",
       "_id": "@babel/plugin-transform-exponentiation-operator@7.28.6",
@@ -182,9 +180,7 @@
     "7.21.4-esm.4": {
       "name": "@babel/plugin-transform-exponentiation-operator",
       "version": "7.21.4-esm.4",
-      "keywords": [
-        "babel-plugin"
-      ],
+      "keywords": ["babel-plugin"],
       "author": "The Babel Team (https://babel.dev/team)",
       "license": "MIT",
       "_id": "@babel/plugin-transform-exponentiation-operator@7.21.4-esm.4",
@@ -272,9 +268,7 @@
         "access": "public"
       },
       "main": "./lib/index.js",
-      "keywords": [
-        "babel-plugin"
-      ],
+      "keywords": ["babel-plugin"],
       "dependencies": {
         "@babel/helper-plugin-utils": "^8.0.0-rc.2"
       },
