@@ -118,8 +118,6 @@ defineOgImage('Package.takumi', {
   { key: 'whatsapp', width: 800, height: 800 },
 ])
 
-console.log('package docs!@@@@@@@@@@@@@@@@@')
-
 const showLoading = computed(
   () => docsStatus.value === 'pending' || (docsStatus.value === 'idle' && docsUrl.value !== null),
 )

@@ -242,13 +242,13 @@ const sparklineSrc = computed(() => {
       </div>
 
       <div class="flex flex-col max-w-full gap-3">
-        <div v-if="pkgOrg" class="lg:text-5xl text-3xl opacity-50 font-mono tracking-tight leading-none" :style="{ lineClamp: 1 }">
+        <div v-if="pkgOrg" class="lg:text-5xl text-3xl opacity-50 font-mono tracking-tight leading-none" :style="{ textOverflow: 'ellipsis', lineClamp: 1 }">
           {{ pkgOrg }}
         </div>
-        <div class="lg:text-7xl text-5xl tracking-tighter font-mono leading-none" :style="{ lineClamp: 1 }">
+        <div class="tracking-tighter font-mono leading-none overflow-hidden" :class="(pkgShortName?.length ?? 0) > 20 ? 'lg:text-6xl text-4xl' : 'lg:text-7xl text-5xl'" :style="{ textOverflow: 'ellipsis', lineClamp: 1, wordBreak: 'break-all' }">
           {{ pkgShortName }}
         </div>
-        <div v-if="version" class="pt-3 lg:text-4xl text-3xl opacity-70 font-mono tracking-tight leading-none" :style="{ lineClamp: 1 }">
+        <div v-if="version" class="pt-3 lg:text-4xl text-3xl opacity-70 font-mono tracking-tight leading-none" :style="{ textOverflow: 'ellipsis', lineClamp: 1 }">
           v{{ version }}
         </div>
       </div>
@@ -256,7 +256,7 @@ const sparklineSrc = computed(() => {
       <div class="flex items-center gap-5 text-4xl text-fg-muted">
         <div v-if="repositoryUrl" class="flex items-center gap-2">
           <div class="i-simple-icons:github w-8 h-8 text-white" />
-          <span v-if="repoRef">
+          <span v-if="repoRef" class="max-w-[500px]" :style="{ textOverflow: 'ellipsis' }">
             {{ repoRef.owner }}<span class="opacity-50">/</span>{{ repoRef.repo }}
           </span>
           <span v-else>{{ $t('package.links.repo') }}</span>

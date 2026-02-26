@@ -21,7 +21,7 @@ const { name: siteName } = useSiteConfig()
     </div>
 
     <div class="flex flex-col max-w-full gap-3">
-      <div class="lg:text-7xl text-5xl tracking-tighter font-mono leading-none" :style="{ lineClamp: 1 }">
+      <div class="lg:text-7xl text-5xl tracking-tighter font-mono leading-none" :style="{ lineClamp: 1, textOverflow: 'ellipsis' }">
         {{ title }}
       </div>
     </div>

@@ -18,7 +18,7 @@ const testCases = [
   { path: '/package/nuxt/v/4.3.1', label: 'unscoped with explicit version' },
   { path: '/package/@nuxt/kit', label: 'scoped package' },
   { path: '/package/@anthropic-ai/claude-code', label: 'scoped with long name' },
-  { path: '/package/typescript-eslint-parser-for-extra-long-name', label: 'extremely long name' },
+  { path: '/package/@babel/plugin-transform-exponentiation-operator', label: 'extremely long name' },
 
   // Package code-tree variant (file tree decoration)
   { path: '/package-code/vue/v/3.5.27', label: 'code-tree variant' },
