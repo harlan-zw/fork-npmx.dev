@@ -322,7 +322,7 @@ const sparklineSrc = computed(() => {
           class="w-5 h-5 text-fg-muted shrink-0 force-mr-1.5 i-lucide:folder"
         />
         <span v-else class="w-5 h-5 text-fg-muted shrink-0 force-mr-1.5 i-lucide:file" />
-        <span>{{ row.name }}</span>
+        <span class="text-fg-muted">{{ row.name }}</span>
       </div>
     </div>
 
