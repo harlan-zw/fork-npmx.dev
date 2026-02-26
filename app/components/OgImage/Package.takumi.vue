@@ -130,13 +130,15 @@ interface SymbolRow {
 }
 const symbolRows = shallowRef<SymbolRow[]>([])
 
+const requestFetch = useRequestFetch()
+
 async function fetchFunctionTree() {
   const ver = resolvedVersion.value ?? version
   if (!ver) return
 
-  const resp = await $fetch<{ toc: string | null }>(`/api/registry/docs/${name}/v/${ver}`).catch(
-    () => null,
-  )
+  const resp = await requestFetch<{ toc: string | null }>(
+    `/api/registry/docs/${name}/v/${ver}`,
+  ).catch(() => null)
   if (!resp?.toc) return
 
   const rows: SymbolRow[] = []

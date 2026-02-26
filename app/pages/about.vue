@@ -17,7 +17,7 @@ useSeoMeta({
 
 defineOgImage('Page.takumi', {
   title: () => `${$t('about.title')}`,
-  description: 'a fast, modern browser for the **npm registry**',
+  description: 'a fast, modern browser for the npm registry',
 })
 
 const pmLinks = {
