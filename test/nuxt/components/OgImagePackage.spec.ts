@@ -17,6 +17,9 @@ vi.mock('~/utils/npm/api', () => ({
   fetchNpmDownloadsRange: vi.fn().mockResolvedValue(null),
 }))
 vi.mock('~/composables/useCharts', () => ({
+  useCharts: vi.fn().mockReturnValue({
+    fetchPackageDownloadEvolution: vi.fn().mockResolvedValue([]),
+  }),
   buildRollingWeeklyEvolutionFromDaily: vi.fn().mockReturnValue([]),
   smoothPath: vi.fn().mockReturnValue(''),
 }))

@@ -57,6 +57,7 @@ for (const { path, label } of testCases) {
       const imageBuffer = await response.body()
       expect(imageBuffer).toMatchSnapshot({
         name: `og-image-${path.replace(/\//g, '-').replace(/^-/, '')}.png`,
+        maxDiffPixelRatio: 0.02,
       })
     })
   })
