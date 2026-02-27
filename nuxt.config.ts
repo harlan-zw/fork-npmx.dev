@@ -257,7 +257,6 @@ export default defineNuxtConfig({
     enabled: !isStorybook,
   },
 
-
   pwa: {
     // Disable service worker
     disable: true,
