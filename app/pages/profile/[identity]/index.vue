@@ -99,7 +99,7 @@ useSeoMeta({
 })
 
 /**
-defineOgImageComponent('Default', {
+defineOgImage('Default', {
   title: () => `~${username.value}`,
   description: () => (results.value ? `${results.value.total} packages` : 'npm user profile'),
   primaryColor: '#60a5fa',
