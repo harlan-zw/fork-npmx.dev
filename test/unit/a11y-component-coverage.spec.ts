@@ -10,8 +10,8 @@
  */
 import fs from 'node:fs'
 import path from 'node:path'
-import { assert, describe, it } from 'vitest'
 import { fileURLToPath } from 'node:url'
+import { assert, describe, it } from 'vitest'
 
 /**
  * Components explicitly skipped from a11y testing with reasons.
@@ -23,6 +23,7 @@ import { fileURLToPath } from 'node:url'
  */
 const SKIPPED_COMPONENTS: Record<string, string> = {
   // OgImage components are server-side rendered images, not interactive UI
+  'OgImage/BlogPost.vue': 'OG Image component - server-rendered image, not interactive UI',
   'OgImage/Package.takumi.vue': 'OG Image component - server-rendered image, not interactive UI',
   'OgImage/Page.takumi.vue': 'OG Image component - server-rendered image, not interactive UI',
   'OgImage/Splash.takumi.vue': 'OG Image component - server-rendered image, not interactive UI',
@@ -194,27 +195,23 @@ describe('a11y component test coverage', () => {
 function buildMissingTestsMessage(missingTests: string[]): string {
   if (missingTests.length === 0) return ''
   return (
-    `Missing a11y tests for ${missingTests.length} component(s):\n` +
-    missingTests.map(c => `  - ${c}`).join('\n') +
-    '\n\nTo fix: Add tests in test/nuxt/a11y.spec.ts or add to SKIPPED_COMPONENTS ' +
-    'in test/unit/a11y-component-coverage.spec.ts with justification.'
+    `Missing a11y tests for ${missingTests.length} component(s):\n${missingTests
+      .map(c => `  - ${c}`)
+      .join('\n')}\n\nTo fix: Add tests in test/nuxt/a11y.spec.ts or add to SKIPPED_COMPONENTS ` +
+    `in test/unit/a11y-component-coverage.spec.ts with justification.`
   )
 }
 
 function buildObsoleteSkipsMessage(obsoleteSkips: string[]): string {
   if (obsoleteSkips.length === 0) return ''
-  return (
-    `Obsolete SKIPPED_COMPONENTS entries:\n` +
-    obsoleteSkips.map(c => `  - ${c}`).join('\n') +
-    '\n\nThese components no longer exist. Remove them from SKIPPED_COMPONENTS.'
-  )
+  return `Obsolete SKIPPED_COMPONENTS entries:\n${obsoleteSkips
+    .map(c => `  - ${c}`)
+    .join('\n')}\n\nThese components no longer exist. Remove them from SKIPPED_COMPONENTS.`
 }
 
 function buildUnnecessarySkipsMessage(unnecessarySkips: string[]): string {
   if (unnecessarySkips.length === 0) return ''
-  return (
-    `Unnecessary SKIPPED_COMPONENTS entries:\n` +
-    unnecessarySkips.map(c => `  - ${c}`).join('\n') +
-    '\n\nThese components have tests now. Remove them from SKIPPED_COMPONENTS.'
-  )
+  return `Unnecessary SKIPPED_COMPONENTS entries:\n${unnecessarySkips
+    .map(c => `  - ${c}`)
+    .join('\n')}\n\nThese components have tests now. Remove them from SKIPPED_COMPONENTS.`
 }
