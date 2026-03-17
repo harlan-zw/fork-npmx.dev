@@ -35,9 +35,9 @@ defineOgImage('Page.takumi', {
   description: () => $t('settings.tagline'),
 })
 
-const setLocale: typeof setNuxti18nLocale = locale => {
-  settings.value.selectedLocale = locale
-  return setNuxti18nLocale(locale)
+const setLocale: typeof setNuxti18nLocale = newLocale => {
+  settings.value.selectedLocale = newLocale
+  return setNuxti18nLocale(newLocale)
 }
 </script>
 
