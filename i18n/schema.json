@@ -1003,9 +1003,6 @@
             "page_title_version": {
               "type": "string"
             },
-            "og_title": {
-              "type": "string"
-            },
             "view_package": {
               "type": "string"
             }
