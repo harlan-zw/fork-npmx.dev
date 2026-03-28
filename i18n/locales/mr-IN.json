@@ -332,6 +332,7 @@
       "page_title": "API दस्तऐवज - npmx",
       "page_title_name": "{name} दस्तऐवज - npmx",
       "page_title_version": "{name} दस्तऐवज - npmx",
+      "og_title": "{name} - दस्तऐवज",
       "view_package": "पॅकेज पहा"
     },
     "get_started": {

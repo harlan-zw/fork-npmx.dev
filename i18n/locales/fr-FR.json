@@ -331,6 +331,7 @@
       "page_title": "Documentation API - npmx",
       "page_title_name": "Documentation {name} - npmx",
       "page_title_version": "Documentation {name} - npmx",
+      "og_title": "{name} - Documentation",
       "view_package": "Voir le paquet"
     },
     "get_started": {

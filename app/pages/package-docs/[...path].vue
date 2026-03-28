@@ -114,7 +114,7 @@ const pageTitle = computed(() => {
 
 useSeoMeta({
   title: () => pageTitle.value,
-  ogTitle: () => pageTitle.value,
+  ogTitle: () => t('package.docs.og_title', { name: packageName.value }),
   twitterTitle: () => pageTitle.value,
   description: () => pkg.value?.license ?? '',
   ogDescription: () => pkg.value?.license ?? '',
