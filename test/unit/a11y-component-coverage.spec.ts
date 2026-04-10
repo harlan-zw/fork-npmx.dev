@@ -25,7 +25,7 @@ const SKIPPED_COMPONENTS: Record<string, string> = {
   'OgBrand.vue': 'OG Image component - server-rendered image, not interactive UI',
   'OgLayout.vue': 'OG Image component - server-rendered image, not interactive UI',
   'OgImage/BlogPost.takumi.vue': 'OG Image component - server-rendered image, not interactive UI',
-  'OgImage/Compare.vue': 'OG Image component - server-rendered image, not interactive UI',
+  'OgImage/Compare.takumi.vue': 'OG Image component - server-rendered image, not interactive UI',
   'OgImage/Package.takumi.vue': 'OG Image component - server-rendered image, not interactive UI',
   'OgImage/Page.takumi.vue': 'OG Image component - server-rendered image, not interactive UI',
   'OgImage/Profile.takumi.vue': 'OG Image component - server-rendered image, not interactive UI',

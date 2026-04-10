@@ -10,7 +10,7 @@ import { expect, test } from './test-utils'
  * - Static pages (Page.takumi)
  * - Packages (Package.takumi with download-chart, code-tree, function-tree variants)
  */
-const testCases = [
+const TEST_CASES = [
   // Default OG image template
   { path: '/', label: 'home page' },
 
@@ -30,6 +30,9 @@ const testCases = [
   // Blog post OG image template
   { path: '/blog/alpha-release', label: 'blog post' },
 
+  // Compare OG image template
+  { path: '/compare?packages=vue,react,svelte', label: 'compare' },
+
   // Package code-tree variant (file tree decoration)
   { path: '/package-code/vue/v/3.5.27', label: 'code-tree variant' },
 
@@ -37,7 +40,7 @@ const testCases = [
   { path: '/package-docs/ufo/v/1.6.3', label: 'function-tree variant' },
 ] as const
 
-for (const { path, label } of testCases) {
+for (const { path, label } of TEST_CASES) {
   test.describe(`${label} (${path})`, () => {
     test(`og image snapshot`, async ({ page, goto, baseURL }) => {
       await goto(path, { waitUntil: 'domcontentloaded' })
