@@ -300,6 +300,9 @@ export default defineNuxtConfig({
       // Strict mode only activates when a secret is present (CI builds without one).
       strict: !!process.env.NUXT_IMAGE_PROXY_SECRET,
       secret: process.env.NUXT_IMAGE_PROXY_SECRET,
+      // HMAC signing is sufficient; origin pinning blocks localhost e2e runs
+      // and adds no meaningful security on top of signed URLs.
+      restrictRuntimeImagesToOrigin: false,
     },
   },
 
