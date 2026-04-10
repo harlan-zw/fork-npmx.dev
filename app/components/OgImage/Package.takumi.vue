@@ -58,6 +58,11 @@ const { repoRef, stars, refresh: refreshRepoMeta } = useRepoMeta(repositoryUrl)
 
 const formattedStars = computed(() => (stars.value > 0 ? compactFormat.format(stars.value) : ''))
 
+const weeklyDownloads = shallowRef(0)
+const formattedDownloads = computed(() =>
+  weeklyDownloads.value ? compactFormat.format(weeklyDownloads.value) : '',
+)
+
 const totalLikes = shallowRef(0)
 const formattedLikes = computed(() =>
   totalLikes.value ? compactFormat.format(totalLikes.value) : '',
@@ -184,8 +189,23 @@ const fetchLikes = $fetch<{ totalLikes: number }>(`/api/social/likes/${name}`)
   })
   .catch(() => {})
 
+const downloadUrl = `https://api.npmjs.org/downloads/point/last-week/${encodePackageName(name)}`
+const fetchDownloads = $fetch<{ downloads: number }>(downloadUrl)
+  .then(d => {
+    console.error('[og-image-package] downloads response:', JSON.stringify(d))
+    weeklyDownloads.value = d?.downloads ?? 0
+  })
+  .catch(err => {
+    console.error('[og-image-package] downloads fetch failed:', downloadUrl, err?.message || err)
+  })
+
 try {
-  await Promise.all([refreshPkg().then(() => refreshRepoMeta()), fetchVariantData(), fetchLikes])
+  await Promise.all([
+    refreshPkg().then(() => refreshRepoMeta()),
+    fetchVariantData(),
+    fetchLikes,
+    fetchDownloads,
+  ])
 } catch (err) {
   console.warn('[og-image-package] Failed to load data server-side:', err)
   throw createError({
@@ -272,6 +292,14 @@ const sparklineSrc = computed(() => {
           </span>
           <span v-else>{{ $t('package.links.repo') }}</span>
         </div>
+
+        <span v-if="formattedDownloads" class="flex items-center gap-2" data-testid="downloads">
+          <div
+            class="i-lucide:download shrink-0 text-fg-muted"
+            :style="{ width: '32px', height: '32px' }"
+          />
+          <span>{{ formattedDownloads }}/wk</span>
+        </span>
 
         <span v-if="formattedStars" class="flex items-center gap-2" data-testid="stars">
           <div

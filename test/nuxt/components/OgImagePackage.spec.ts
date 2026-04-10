@@ -20,7 +20,6 @@ vi.mock('~/composables/useCharts', () => ({
   useCharts: vi.fn().mockReturnValue({
     fetchPackageDownloadEvolution: vi.fn().mockResolvedValue([]),
   }),
-  buildRollingWeeklyEvolutionFromDaily: vi.fn().mockReturnValue([]),
   smoothPath: vi.fn().mockReturnValue(''),
 }))
 
@@ -38,9 +37,31 @@ describe('OgImagePackage', () => {
       stars?: number
       license?: string | null
       packageName?: string
+      downloads?: number
     } = {},
   ) {
-    const { stars = 0, license = 'MIT', packageName = 'test-package' } = overrides
+    const {
+      stars = 0,
+      license = 'MIT',
+      packageName = 'test-package',
+      downloads = 12500,
+    } = overrides
+
+    // Mock $fetch for downloads endpoint
+    vi.spyOn(globalThis, '$fetch').mockImplementation((url: string) => {
+      if (typeof url === 'string' && url.includes('api.npmjs.org/downloads/point')) {
+        return Promise.resolve({
+          downloads,
+          start: '2026-04-03',
+          end: '2026-04-09',
+          package: packageName,
+        })
+      }
+      if (typeof url === 'string' && url.includes('/api/social/likes/')) {
+        return Promise.resolve({ totalLikes: 0, userHasLiked: false })
+      }
+      return Promise.resolve(null)
+    })
 
     mockUseResolvedVersion.mockReturnValue({
       data: ref('1.0.0'),
@@ -79,6 +100,7 @@ describe('OgImagePackage', () => {
     mockUseResolvedVersion.mockReset()
     mockUsePackage.mockReset()
     mockUseRepoMeta.mockReset()
+    vi.restoreAllMocks()
   })
 
   it('renders the package name', async () => {
@@ -132,6 +154,30 @@ describe('OgImagePackage', () => {
       })
 
       expect(component.text()).toContain('45.2K')
+    })
+  })
+
+  describe('downloads', () => {
+    it('shows formatted downloads when present', async () => {
+      setupMocks({ downloads: 12500 })
+
+      const component = await mountSuspended(OgImagePackage, {
+        props: baseProps,
+      })
+
+      expect(component.find('[data-testid="downloads"]').exists()).toBe(true)
+      expect(component.text()).toContain('12.5K')
+      expect(component.text()).toContain('/wk')
+    })
+
+    it('hides downloads when count is 0', async () => {
+      setupMocks({ downloads: 0 })
+
+      const component = await mountSuspended(OgImagePackage, {
+        props: baseProps,
+      })
+
+      expect(component.find('[data-testid="downloads"]').exists()).toBe(false)
     })
   })
 
