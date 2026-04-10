@@ -103,7 +103,7 @@ export default defineNuxtConfig({
       isr: {
         expiration: 60 * 60 /* one hour */,
         passQuery: true,
-        allowQuery: ['color', 'labelColor', 'label', 'name', 'style'],
+        allowQuery: ['color', 'labelColor', 'label', 'name', 'style', 'value'],
       },
     },
     '/api/registry/image-proxy': {
@@ -128,6 +128,14 @@ export default defineNuxtConfig({
     '/:pkg/.well-known/skills/**': { isr: 3600 },
     '/:scope/:pkg/.well-known/skills/**': { isr: 3600 },
     '/_og/d/**': getISRConfig(60 * 60 * 24), // 1 day
+    '/__og-image__/**': getISRConfig(3600),
+    '/__og-image__/image/compare/**': {
+      isr: {
+        expiration: 3600,
+        passQuery: true,
+        allowQuery: ['packages', '_query'],
+      },
+    },
     '/_avatar/**': { isr: 3600, proxy: 'https://www.gravatar.com/avatar/**' },
     '/opensearch.xml': { isr: true },
     '/oauth-client-metadata.json': { prerender: true },
@@ -276,6 +284,12 @@ export default defineNuxtConfig({
         preload: true,
         global: true,
       },
+      {
+        name: 'IBM Plex Sans Arabic',
+        weights: ['400', '500', '600'],
+        global: true,
+        subsets: ['arabic'],
+      },
     ],
   },
 
@@ -369,6 +383,8 @@ export default defineNuxtConfig({
         '@vueuse/integrations/useFocusTrap/component',
         'vue-data-ui/vue-ui-sparkline',
         'vue-data-ui/vue-ui-xy',
+        'vue-data-ui/vue-ui-quadrant',
+        'vue-data-ui/vue-ui-horizontal-bar',
         'virtua/vue',
         'semver',
         'validate-npm-package-name',

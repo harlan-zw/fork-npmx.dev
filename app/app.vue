@@ -50,6 +50,8 @@ if (import.meta.server) {
 const keyboardShortcuts = useKeyboardShortcuts()
 const { settings } = useSettings()
 
+initKeyShortcuts()
+
 onKeyDown(
   '/',
   e => {
@@ -147,6 +149,8 @@ defineOgImage('Page.takumi', {}, { alt: 'npmx — a fast, modern browser for the
     <div id="main-content" class="flex-1 flex flex-col" tabindex="-1">
       <NuxtPage />
     </div>
+
+    <CommandPalette />
 
     <AppFooter />
 
