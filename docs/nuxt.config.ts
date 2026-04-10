@@ -7,4 +7,7 @@ export default defineNuxtConfig({
   site: {
     name: 'npmx docs',
   },
+  ogImage: {
+    enabled: false,
+  },
 })
