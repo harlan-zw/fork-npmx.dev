@@ -7,10 +7,10 @@ const isStorybook = process.env.STORYBOOK === 'true' || process.env.VITEST_STORY
 export default defineNuxtConfig({
   modules: [
     '@unocss/nuxt',
+    'nuxt-og-image',
     '@nuxtjs/html-validator',
     '@nuxt/scripts',
     '@nuxt/a11y',
-    'nuxt-og-image',
     '@nuxt/test-utils',
     '@vite-pwa/nuxt',
     '@vueuse/nuxt',
@@ -288,11 +288,7 @@ export default defineNuxtConfig({
   htmlValidator: {
     enabled: !isCI || (provider !== 'vercel' && !!process.env.VALIDATE_HTML),
     options: {
-      rules: {
-        'meta-refresh': 'off',
-        // OG image HTML inherits full page titles that routinely exceed 70 chars
-        'long-title': 'off',
-      },
+      rules: { 'meta-refresh': 'off' },
     },
     failOnError: true,
   },
