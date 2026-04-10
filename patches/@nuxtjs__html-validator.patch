@@ -1,0 +1,13 @@
+diff --git a/dist/module.mjs b/dist/module.mjs
+index 0000000..0000001 100644
+--- a/dist/module.mjs
++++ b/dist/module.mjs
+@@ -95,7 +95,7 @@ const module = defineNuxtModule({
+       }
+       nuxt.hook("nitro:init", (nitro) => {
+         nitro.hooks.hook("prerender:generate", (route) => {
+-          if (!route.contents || !route.fileName?.endsWith(".html")) {
++          if (!route.contents || !route.fileName?.endsWith(".html") || route.route?.startsWith("/_og/")) {
+             return;
+           }
+           if (route.contents.match(NuxtRedirectHtmlRegex)) {
