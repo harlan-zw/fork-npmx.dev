@@ -296,8 +296,9 @@ export default defineNuxtConfig({
   ogImage: {
     enabled: !isStorybook,
     security: {
-      strict: true,
-      // Reuse image-proxy HMAC secret to avoid managing a second secret
+      // Reuse image-proxy HMAC secret to avoid managing a second secret.
+      // Strict mode only activates when a secret is present (CI builds without one).
+      strict: !!process.env.NUXT_IMAGE_PROXY_SECRET,
       secret: process.env.NUXT_IMAGE_PROXY_SECRET,
     },
   },
