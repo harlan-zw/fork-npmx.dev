@@ -296,7 +296,9 @@ export default defineNuxtConfig({
   ogImage: {
     enabled: !isStorybook,
     security: {
-      maxQueryParamSize: 2048,
+      strict: true,
+      // Reuse image-proxy HMAC secret to avoid managing a second secret
+      secret: process.env.NUXT_IMAGE_PROXY_SECRET,
     },
   },
 
