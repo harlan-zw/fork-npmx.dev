@@ -257,6 +257,12 @@ export default defineNuxtConfig({
     replace: {
       'import.meta.test': isTest,
     },
+    prerender: {
+      // OG images are runtime-only (ISR). Without a signing secret (CI),
+      // URLs use hash mode which requires the source page to be prerendered
+      // first — skip to avoid orphaned hash 404s.
+      ignore: ['/_og/'],
+    },
   },
 
   fonts: {
