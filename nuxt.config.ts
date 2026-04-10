@@ -288,7 +288,11 @@ export default defineNuxtConfig({
   htmlValidator: {
     enabled: !isCI || (provider !== 'vercel' && !!process.env.VALIDATE_HTML),
     options: {
-      rules: { 'meta-refresh': 'off' },
+      rules: {
+        'meta-refresh': 'off',
+        // OG image HTML inherits full page titles that routinely exceed 70 chars
+        'long-title': 'off',
+      },
     },
     failOnError: true,
   },
