@@ -1,10 +1,16 @@
 import { mockNuxtImport, mountSuspended, registerEndpoint } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 
-const { mockUseResolvedVersion, mockUsePackage, mockUseRepoMeta } = vi.hoisted(() => ({
+const {
+  mockUseResolvedVersion,
+  mockUsePackage,
+  mockUseRepoMeta,
+  mockFetchPackageDownloadEvolution,
+} = vi.hoisted(() => ({
   mockUseResolvedVersion: vi.fn(),
   mockUsePackage: vi.fn(),
   mockUseRepoMeta: vi.fn(),
+  mockFetchPackageDownloadEvolution: vi.fn().mockResolvedValue([]),
 }))
 
 mockNuxtImport('useResolvedVersion', () => mockUseResolvedVersion)
@@ -18,7 +24,7 @@ vi.mock('~/utils/npm/api', () => ({
 }))
 vi.mock('~/composables/useCharts', () => ({
   useCharts: vi.fn().mockReturnValue({
-    fetchPackageDownloadEvolution: vi.fn().mockResolvedValue([]),
+    fetchPackageDownloadEvolution: mockFetchPackageDownloadEvolution,
   }),
   smoothPath: vi.fn().mockReturnValue(''),
 }))
@@ -47,21 +53,16 @@ describe('OgImagePackage', () => {
       downloads = 12500,
     } = overrides
 
-    // Mock $fetch for downloads endpoint
-    vi.spyOn(globalThis, '$fetch').mockImplementation((url: string) => {
-      if (typeof url === 'string' && url.includes('api.npmjs.org/downloads/point')) {
-        return Promise.resolve({
-          downloads,
-          start: '2026-04-03',
-          end: '2026-04-09',
-          package: packageName,
-        })
-      }
+    // Mock weekly evolution to provide download counts
+    mockFetchPackageDownloadEvolution.mockResolvedValue(downloads > 0 ? [{ value: downloads }] : [])
+
+    // Mock $fetch for likes endpoint
+    vi.spyOn(globalThis, '$fetch').mockImplementation(((url: string) => {
       if (typeof url === 'string' && url.includes('/api/social/likes/')) {
         return Promise.resolve({ totalLikes: 0, userHasLiked: false })
       }
       return Promise.resolve(null)
-    })
+    }) as typeof $fetch)
 
     mockUseResolvedVersion.mockReturnValue({
       data: ref('1.0.0'),
