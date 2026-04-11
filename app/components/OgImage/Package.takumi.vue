@@ -58,10 +58,10 @@ const { repoRef, stars, refresh: refreshRepoMeta } = useRepoMeta(repositoryUrl)
 
 const formattedStars = computed(() => (stars.value > 0 ? compactFormat.format(stars.value) : ''))
 
-const weeklyDownloads = shallowRef(0)
-const formattedDownloads = computed(() =>
-  weeklyDownloads.value ? compactFormat.format(weeklyDownloads.value) : '',
-)
+const formattedDownloads = computed(() => {
+  const last = weeklyValues.value.at(-1)
+  return last ? compactFormat.format(last) : ''
+})
 
 const totalLikes = shallowRef(0)
 const formattedLikes = computed(() =>
@@ -177,34 +177,25 @@ async function fetchFunctionTree() {
   symbolRows.value = rows
 }
 
-function fetchVariantData() {
-  if (variant === 'code-tree') return fetchCodeTree()
-  if (variant === 'function-tree') return fetchFunctionTree()
-  return fetchWeeklyEvolution()
-}
-
-const fetchLikes = $fetch<{ totalLikes: number }>(`/api/social/likes/${name}`)
-  .then(d => {
-    totalLikes.value = d?.totalLikes ?? 0
-  })
-  .catch(() => {})
-
-const downloadUrl = `https://api.npmjs.org/downloads/point/last-week/${encodePackageName(name)}`
-const fetchDownloads = $fetch<{ downloads: number }>(downloadUrl)
-  .then(d => {
-    console.error('[og-image-package] downloads response:', JSON.stringify(d))
-    weeklyDownloads.value = d?.downloads ?? 0
-  })
-  .catch(err => {
-    console.error('[og-image-package] downloads fetch failed:', downloadUrl, err?.message || err)
-  })
+const fetchLikes = import.meta.test
+  ? // need deterministic likes for testing
+    Promise.resolve().then(() => {
+      totalLikes.value = 83
+    })
+  : $fetch<{ totalLikes: number }>(`/api/social/likes/${name}`).then(d => {
+      totalLikes.value = d?.totalLikes ?? 0
+    })
 
 try {
   await Promise.all([
     refreshPkg().then(() => refreshRepoMeta()),
-    fetchVariantData(),
+    variant === 'code-tree'
+      ? fetchCodeTree()
+      : variant === 'function-tree'
+        ? fetchFunctionTree()
+        : undefined,
+    fetchWeeklyEvolution(),
     fetchLikes,
-    fetchDownloads,
   ])
 } catch (err) {
   console.warn('[og-image-package] Failed to load data server-side:', err)
@@ -238,11 +229,11 @@ const sparklineSrc = computed(() => {
   const svg = [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" fill="none" preserveAspectRatio="none">`,
     `<defs><linearGradient id="af" x1="0" y1="0" x2="0" y2="1">`,
-    `<stop offset="0%" stop-color="white" stop-opacity="0.07"/>`,
-    `<stop offset="100%" stop-color="white" stop-opacity="0.005"/>`,
+    `<stop offset="0%" stop-color="white" stop-opacity="0.018"/>`,
+    `<stop offset="100%" stop-color="white" stop-opacity="0.001"/>`,
     `</linearGradient></defs>`,
     `<path d="M ${firstX},${height} L ${pathData} L ${lastX},${height} Z" fill="url(#af)"/>`,
-    `<path d="M ${pathData}" stroke="rgba(255,255,255,0.18)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`,
+    `<path d="M ${pathData}" stroke="rgba(255,255,255,0.045)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`,
     `</svg>`,
   ].join('')
 
@@ -251,15 +242,15 @@ const sparklineSrc = computed(() => {
 </script>
 
 <template>
-  <OgLayout>
+  <OgLayout data-theme="dark">
     <div class="px-15 py-12 flex flex-col justify-center gap-12 h-full">
       <OgBrand :height="48" />
 
       <div class="flex flex-col max-w-full gap-3">
         <div
           v-if="pkgNameParts.org"
-          class="lg:text-5xl text-3xl opacity-50 font-mono tracking-tight leading-none"
-          :style="{ textOverflow: 'ellipsis', lineClamp: 1 }"
+          class="lg:text-5xl text-3xl font-mono tracking-tight leading-none"
+          style="opacity: 0.5; text-overflow: ellipsis; line-clamp: 1"
         >
           {{ pkgNameParts.org }}
         </div>
@@ -268,65 +259,67 @@ const sparklineSrc = computed(() => {
           :class="
             (pkgNameParts.short?.length ?? 0) > 20 ? 'lg:text-6xl text-4xl' : 'lg:text-7xl text-5xl'
           "
-          :style="{ textOverflow: 'ellipsis', lineClamp: 1, wordBreak: 'break-all' }"
+          style="text-overflow: ellipsis; line-clamp: 1; word-break: break-all"
         >
           {{ pkgNameParts.short }}
         </div>
         <div
           v-if="version"
-          class="pt-3 lg:text-4xl text-3xl opacity-70 font-mono tracking-tight leading-none"
-          :style="{ textOverflow: 'ellipsis', lineClamp: 1 }"
+          class="pt-3 lg:text-4xl text-3xl font-mono tracking-tight leading-none"
+          style="opacity: 0.7; text-overflow: ellipsis; line-clamp: 1"
         >
           v{{ version }}
         </div>
       </div>
 
-      <div class="flex items-center gap-5 text-4xl text-fg-muted">
+      <div class="flex flex-col gap-3 text-4xl text-fg-muted">
         <div v-if="repositoryUrl" class="flex items-center gap-2">
           <div
             class="i-simple-icons:github shrink-0 text-fg-muted"
-            :style="{ width: '32px', height: '32px' }"
+            style="width: 24px; height: 24px"
           />
-          <span v-if="repoRef" class="max-w-[500px]" :style="{ textOverflow: 'ellipsis' }">
+          <span v-if="repoRef" class="max-w-[500px]" style="text-overflow: ellipsis">
             {{ repoRef.owner }}<span class="opacity-50">/</span>{{ repoRef.repo }}
           </span>
           <span v-else>{{ $t('package.links.repo') }}</span>
         </div>
 
-        <span v-if="formattedDownloads" class="flex items-center gap-2" data-testid="downloads">
-          <div
-            class="i-lucide:download shrink-0 text-fg-muted"
-            :style="{ width: '32px', height: '32px' }"
-          />
-          <span>{{ formattedDownloads }}/wk</span>
-        </span>
+        <div class="flex items-center gap-5">
+          <span v-if="formattedDownloads" class="flex items-center gap-2" data-testid="downloads">
+            <div
+              class="i-lucide:download shrink-0 text-fg-muted"
+              style="width: 24px; height: 24px"
+            />
+            <span>{{ formattedDownloads }}/wk</span>
+          </span>
 
-        <span v-if="formattedStars" class="flex items-center gap-2" data-testid="stars">
-          <div
-            class="i-lucide:star shrink-0 text-fg-muted"
-            :style="{ width: '32px', height: '32px', fill: 'white' }"
-          />
-          <span>{{ formattedStars }}</span>
-        </span>
+          <span v-if="formattedStars" class="flex items-center gap-2" data-testid="stars">
+            <div
+              class="i-lucide:star shrink-0 text-fg-muted"
+              style="width: 24px; height: 24px; fill: white"
+            />
+            <span>{{ formattedStars }}</span>
+          </span>
 
-        <span v-if="formattedLikes" class="flex items-center gap-2" data-testid="likes">
-          <div
-            class="i-lucide:heart shrink-0 text-fg-muted"
-            :style="{ width: '32px', height: '32px', fill: 'white' }"
-          />
-          <span>{{ formattedLikes }}</span>
-        </span>
+          <span v-if="formattedLikes" class="flex items-center gap-2" data-testid="likes">
+            <div
+              class="i-lucide:heart shrink-0 text-fg-muted"
+              style="width: 24px; height: 24px; fill: white"
+            />
+            <span>{{ formattedLikes }}</span>
+          </span>
 
-        <div
-          v-if="pkg?.license && !pkg.license.includes(' ')"
-          class="flex items-center gap-2"
-          data-testid="license"
-        >
           <div
-            class="i-lucide:scale shrink-0 text-fg-subtle self-center"
-            :style="{ width: '32px', height: '32px' }"
-          />
-          <span>{{ pkg.license }}</span>
+            v-if="pkg?.license && !pkg.license.includes(' ')"
+            class="flex items-center gap-2"
+            data-testid="license"
+          >
+            <div
+              class="i-lucide:scale shrink-0 text-fg-subtle self-center"
+              style="width: 24px; height: 24px"
+            />
+            <span>{{ pkg.license }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -335,25 +328,30 @@ const sparklineSrc = computed(() => {
     <img
       v-if="variant === 'download-chart' && sparklineSrc"
       :src="sparklineSrc"
-      class="absolute force-left-0 bottom-0 w-full h-[65%] opacity-30"
+      class="absolute force-left-0 bottom-0 w-full h-[65%]"
     />
 
     <!-- Code tree variant -->
     <div
       v-else-if="variant === 'code-tree' && treeRows.length"
-      class="text-fg-muted absolute force-right-8 top-8 bottom-8 w-[340px] flex flex-col gap-0 opacity-30 overflow-hidden font-mono text-4.5 leading-7"
+      class="text-fg-muted absolute force-right-8 top-8 bottom-8 w-[340px] flex flex-col gap-0 opacity-30 overflow-hidden font-mono text-4.5 leading-8"
     >
       <div
         v-for="(row, i) in treeRows"
         :key="i"
-        class="flex items-center whitespace-nowrap text-fg"
+        class="flex items-center gap-3 whitespace-nowrap text-fg"
         :style="{ paddingLeft: `${row.depth * 20}px` }"
       >
-        <span
+        <div
           v-if="row.isDir"
-          class="w-5 h-5 text-fg-muted shrink-0 force-mr-1.5 i-lucide:folder"
+          class="text-fg-muted shrink-0 i-lucide:folder"
+          style="width: 20px; height: 20px"
         />
-        <span v-else class="w-5 h-5 text-fg-muted shrink-0 force-mr-1.5 i-lucide:file" />
+        <div
+          v-else
+          class="text-fg-muted shrink-0 i-lucide:file"
+          style="width: 20px; height: 20px"
+        />
         <span class="text-fg-muted">{{ row.name }}</span>
       </div>
     </div>
@@ -361,45 +359,53 @@ const sparklineSrc = computed(() => {
     <!-- Function tree variant (API symbols) -->
     <div
       v-else-if="variant === 'function-tree' && symbolRows.length"
-      class="absolute force-right-8 top-8 bottom-8 w-[340px] flex flex-col gap-0 opacity-30 overflow-hidden font-mono text-4.5 leading-7"
+      class="absolute force-right-8 top-8 bottom-8 w-[340px] flex flex-col gap-0 opacity-30 overflow-hidden font-mono text-4.5 leading-8"
     >
       <div
         v-for="(row, i) in symbolRows"
         :key="i"
-        class="flex items-center whitespace-nowrap text-fg"
+        class="flex items-center gap-3 whitespace-nowrap text-fg"
         :style="{ paddingLeft: row.kind === 'symbol' ? '20px' : '0' }"
       >
-        <span
+        <div
           v-if="row.icon === 'i-lucide:parentheses'"
-          class="w-5 h-5 shrink-0 text-fg-muted force-mr-1.5 i-lucide:parentheses"
+          class="shrink-0 text-fg-muted i-lucide:parentheses"
+          style="width: 20px; height: 20px"
         />
-        <span
+        <div
           v-else-if="row.icon === 'i-lucide:box'"
-          class="w-5 h-5 shrink-0 text-fg-muted force-mr-1.5 i-lucide:box"
+          class="shrink-0 text-fg-muted i-lucide:box"
+          style="width: 20px; height: 20px"
         />
-        <span
+        <div
           v-else-if="row.icon === 'i-lucide:puzzle'"
-          class="w-5 h-5 shrink-0 text-fg-muted force-mr-1.5 i-lucide:puzzle"
+          class="shrink-0 text-fg-muted i-lucide:puzzle"
+          style="width: 20px; height: 20px"
         />
-        <span
+        <div
           v-else-if="row.icon === 'i-lucide:type'"
-          class="w-5 h-5 shrink-0 text-fg-muted force-mr-1.5 i-lucide:type"
+          class="shrink-0 text-fg-muted i-lucide:type"
+          style="width: 20px; height: 20px"
         />
-        <span
+        <div
           v-else-if="row.icon === 'i-lucide:variable'"
-          class="w-5 h-5 shrink-0 text-fg-muted force-mr-1.5 i-lucide:variable"
+          class="shrink-0 text-fg-muted i-lucide:variable"
+          style="width: 20px; height: 20px"
         />
-        <span
+        <div
           v-else-if="row.icon === 'i-lucide:list'"
-          class="w-5 h-5 shrink-0 text-fg-muted force-mr-1.5 i-lucide:list"
+          class="shrink-0 text-fg-muted i-lucide:list"
+          style="width: 20px; height: 20px"
         />
-        <span
+        <div
           v-else-if="row.icon === 'i-lucide:package'"
-          class="w-5 h-5 shrink-0 text-fg-muted force-mr-1.5 i-lucide:package"
+          class="shrink-0 text-fg-muted i-lucide:package"
+          style="width: 20px; height: 20px"
         />
-        <span
-          v-else-if="row.kind === 'symbol'"
-          class="w-5 h-5 shrink-0 text-fg-muted force-mr-1.5 i-lucide:code"
+        <div
+          v-else
+          class="shrink-0 text-fg-muted i-lucide:code"
+          style="width: 20px; height: 20px"
         />
         <span class="text-fg-muted" :class="row.kind === 'section' ? 'text-4 mt-1' : ''">{{
           row.name

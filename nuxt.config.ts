@@ -294,6 +294,7 @@ export default defineNuxtConfig({
 
   ogImage: {
     enabled: !isStorybook,
+    cacheMaxAgeSeconds: 60 * 60 * 24, // 1 day, download counts change daily
     security: {
       // Reuse image-proxy HMAC secret to avoid managing a second secret.
       // Strict mode only activates when a secret is present (CI builds without one).
