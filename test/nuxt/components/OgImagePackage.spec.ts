@@ -57,12 +57,13 @@ describe('OgImagePackage', () => {
     mockFetchPackageDownloadEvolution.mockResolvedValue(downloads > 0 ? [{ value: downloads }] : [])
 
     // Mock $fetch for likes endpoint
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn(globalThis, '$fetch').mockImplementation(((url: string) => {
       if (typeof url === 'string' && url.includes('/api/social/likes/')) {
         return Promise.resolve({ totalLikes: 0, userHasLiked: false })
       }
       return Promise.resolve(null)
-    }) as typeof $fetch)
+    }) as any)
 
     mockUseResolvedVersion.mockReturnValue({
       data: ref('1.0.0'),
