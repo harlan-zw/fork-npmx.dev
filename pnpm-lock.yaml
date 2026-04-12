@@ -30,7 +30,7 @@ overrides:
   vitest: npm:@voidzero-dev/vite-plus-test@0.1.16
   nuxt-og-image: ^6.3.10
 
-packageExtensionsChecksum: sha256-CeZFKEUz3FOGWgT67KKhK4fQ1Hm4FH8oflL+D3vx5jA=
+packageExtensionsChecksum: sha256-YBtmV2wlHHTKm5hOqoxwkw6LifLft12a+kUIp1CTUjY=
 
 patchedDependencies:
   '@jsr/deno__doc@0.189.1':
