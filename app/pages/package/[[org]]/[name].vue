@@ -560,7 +560,6 @@ const showSkeleton = shallowRef(false)
         :latest-version="latestVersion"
         :provenance-data="provenanceData"
         :provenance-status="provenanceStatus"
-        :class="$style.areaHeader"
         page="main"
         :version-url-pattern="versionUrlPattern"
       />
