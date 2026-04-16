@@ -17,8 +17,9 @@ const {
 
 const getInitials = (name: string) =>
   name
-    .split(' ')
-    .map(n => n[0])
+    .trim()
+    .split(/\s+/)
+    .map(part => part[0] ?? '')
     .join('')
     .toUpperCase()
     .slice(0, 2)

@@ -66,12 +66,15 @@ function mergeDailyPoints(points: DailyRawPoint[]): DailyRawPoint[] {
     .map(([day, value]) => ({ day, value }))
 }
 
+function roundToHundredths(value: number): number {
+  return Math.round(value * 100) / 100
+}
+
 /** Catmull-Rom monotone cubic spline — same algorithm as vue-data-ui's smoothPath for OG Images */
 export function smoothPath(pts: { x: number; y: number }[]): string {
   if (pts.length < 2) return '0,0'
   const n = pts.length - 1
-  const r = (v: number) => Math.round(v * 100) / 100
-  const out = [`${r(pts[0]!.x)},${r(pts[0]!.y)}`]
+  const out = [`${roundToHundredths(pts[0]!.x)},${roundToHundredths(pts[0]!.y)}`]
   const dx: number[] = []
   const dy: number[] = []
   const m: number[] = []
@@ -96,7 +99,7 @@ export function smoothPath(pts: { x: number; y: number }[]): string {
       y1 = pts[i + 1]!.y
     const seg = x1 - x0
     out.push(
-      `C ${r(x0 + seg / 3)},${r(y0 + (t[i]! * seg) / 3)} ${r(x1 - seg / 3)},${r(y1 - (t[i + 1]! * seg) / 3)} ${r(x1)},${r(y1)}`,
+      `C ${roundToHundredths(x0 + seg / 3)},${roundToHundredths(y0 + (t[i]! * seg) / 3)} ${roundToHundredths(x1 - seg / 3)},${roundToHundredths(y1 - (t[i + 1]! * seg) / 3)} ${roundToHundredths(x1)},${roundToHundredths(y1)}`,
     )
   }
 

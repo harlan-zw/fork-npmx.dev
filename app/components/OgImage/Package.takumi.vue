@@ -17,6 +17,26 @@ import type { JsDelivrFileNode } from '#shared/types'
 import { joinURL } from 'ufo'
 import { smoothPath, useCharts } from '~/composables/useCharts'
 
+const REPO_PROVIDER_ICONS: Record<string, string> = {
+  github: 'i-simple-icons:github',
+  gitlab: 'i-simple-icons:gitlab',
+  bitbucket: 'i-simple-icons:bitbucket',
+  codeberg: 'i-simple-icons:codeberg',
+  gitea: 'i-simple-icons:gitea',
+  forgejo: 'i-simple-icons:forgejo',
+  gitee: 'i-simple-icons:gitee',
+  sourcehut: 'i-simple-icons:sourcehut',
+  tangled: 'i-custom:tangled',
+  radicle: 'i-lucide:network',
+}
+
+function sortJsDelivrNodes(nodes: JsDelivrFileNode[]) {
+  return [...nodes].sort((a, b) => {
+    if (a.type !== b.type) return a.type === 'directory' ? -1 : 1
+    return a.name.localeCompare(b.name)
+  })
+}
+
 const { name, version, variant } = defineProps<{
   name: string
   version: string | null
@@ -55,6 +75,10 @@ const repositoryUrl = computed(() => {
 })
 
 const { repoRef, stars, refresh: refreshRepoMeta } = useRepoMeta(repositoryUrl)
+const repoProviderIcon = computed(() => {
+  const provider = repoRef.value?.provider
+  return provider ? (REPO_PROVIDER_ICONS[provider] ?? 'i-lucide:code') : 'i-lucide:code'
+})
 
 const formattedStars = computed(() => (stars.value > 0 ? compactFormat.format(stars.value) : ''))
 
@@ -104,22 +128,15 @@ async function fetchCodeTree() {
   // Call jsDelivr directly — $fetch to internal API can deadlock in OG image island context
   const resp = await $fetch<{ files: JsDelivrFileNode[] }>(
     `https://data.jsdelivr.com/v1/packages/npm/${name}@${ver}`,
+    { timeout: 3000 },
   ).catch(() => null)
   if (!resp?.files) return
 
   const rows: TreeRow[] = []
   const MAX_ROWS = 25
 
-  // Sort: directories first, then files, alphabetical within each group
-  function sorted(nodes: JsDelivrFileNode[]) {
-    return [...nodes].sort((a, b) => {
-      if (a.type !== b.type) return a.type === 'directory' ? -1 : 1
-      return a.name.localeCompare(b.name)
-    })
-  }
-
   function walk(nodes: JsDelivrFileNode[], depth: number) {
-    for (const node of sorted(nodes)) {
+    for (const node of sortJsDelivrNodes(nodes)) {
       if (rows.length >= MAX_ROWS) return
       rows.push({ name: node.name, depth, isDir: node.type === 'directory' })
       if (node.files) walk(node.files, depth + 1)
@@ -275,7 +292,7 @@ const sparklineSrc = computed(() => {
       <div class="flex flex-col gap-3 text-4xl text-fg-muted">
         <div v-if="repositoryUrl" class="flex items-center gap-2">
           <div
-            class="i-simple-icons:github shrink-0 text-fg-muted"
+            :class="[repoProviderIcon, 'shrink-0 text-fg-muted']"
             style="width: 24px; height: 24px"
           />
           <span v-if="repoRef" class="max-w-[500px]" style="text-overflow: ellipsis">

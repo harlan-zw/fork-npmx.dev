@@ -10,7 +10,7 @@ const { title, description } = defineProps<{
     <div class="px-15 py-12 flex flex-col justify-center gap-12 h-full">
       <OgBrand :height="48" />
 
-      <div class="flex flex-col max-w-full gap-3">
+      <div v-if="title" class="flex flex-col max-w-full gap-3">
         <div
           class="lg:text-7xl text-5xl tracking-tighter font-mono leading-none"
           :style="{ lineClamp: 1, textOverflow: 'ellipsis' }"

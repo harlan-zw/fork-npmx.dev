@@ -193,6 +193,7 @@ function getMockForUrl(url: string): MockResult | null {
     if (rangeMatch?.[1] && rangeMatch[2]) {
       const [startDate, endDate] = rangeMatch[1].split(':')
       const packageName = rangeMatch[2]
+      if (!startDate || !endDate) return null
       // Simple hash seeded by package name for deterministic but varied curves
       let h = 0
       for (const c of packageName) h = ((h << 5) - h + c.charCodeAt(0)) | 0
@@ -208,20 +209,24 @@ function getMockForUrl(url: string): MockResult | null {
       const weekendDip = 0.3 + ((s >> 16) % 40) / 100 // 0.30 .. 0.70
 
       const downloads: { day: string; downloads: number }[] = []
-      const start = new Date(startDate!)
-      const end = new Date(endDate!)
-      for (let d = new Date(start); d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
-        const day = d.toISOString().slice(0, 10)
+      const start = new Date(startDate)
+      const end = new Date(endDate)
+      if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return null
+
+      const cursor = new Date(start)
+      while (cursor.getTime() <= end.getTime()) {
+        const day = cursor.toISOString().slice(0, 10)
         const i = downloads.length
         const trend = 1 + trendSlope * i
         const wave = Math.sin((i * 2 * Math.PI) / wavePeriod) * waveAmp
         const noise = Math.sin(i * 7 + s) * 0.05
-        const dow = d.getUTCDay()
+        const dow = cursor.getUTCDay()
         const weekend = dow === 0 || dow === 6 ? 1 - weekendDip : 1
         downloads.push({
           day,
           downloads: Math.max(0, Math.round(base * trend * (1 + wave + noise) * weekend)),
         })
+        cursor.setUTCDate(cursor.getUTCDate() + 1)
       }
       return { data: { downloads, start: startDate, end: endDate, package: packageName } }
     }

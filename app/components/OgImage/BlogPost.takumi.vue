@@ -13,23 +13,24 @@ const {
 
 const formattedDate = computed(() => {
   if (!date) return ''
-  try {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    })
-  } catch {
-    return date
-  }
+  const parsed = new Date(date)
+  if (Number.isNaN(parsed.getTime())) return date
+
+  return parsed.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  })
 })
 
 const MAX_VISIBLE_AUTHORS = 2
 
 const getInitials = (name: string) =>
   name
-    .split(' ')
-    .map(n => n[0])
+    .trim()
+    .split(/\s+/)
+    .map(part => part[0] ?? '')
     .join('')
     .toUpperCase()
     .slice(0, 2)

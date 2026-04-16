@@ -109,19 +109,19 @@
       "maintainers": [
         {
           "name": "hzoo",
-          "email": "hi@henryzoo.com"
+          "email": "user1@example.com"
         },
         {
           "name": "existentialism",
-          "email": "bng412@gmail.com"
+          "email": "user2@example.com"
         },
         {
           "name": "nicolo-ribaudo",
-          "email": "nicolo.ribaudo@gmail.com"
+          "email": "user3@example.com"
         },
         {
           "name": "jlhwung",
-          "email": "jlhwung@gmail.com"
+          "email": "user4@example.com"
         }
       ],
       "homepage": "https://babel.dev/docs/en/next/babel-plugin-transform-exponentiation-operator",
@@ -187,19 +187,19 @@
       "maintainers": [
         {
           "name": "hzoo",
-          "email": "hi@henryzoo.com"
+          "email": "user1@example.com"
         },
         {
           "name": "existentialism",
-          "email": "bng412@gmail.com"
+          "email": "user2@example.com"
         },
         {
           "name": "nicolo-ribaudo",
-          "email": "nicolo.ribaudo@gmail.com"
+          "email": "user3@example.com"
         },
         {
           "name": "jlhwung",
-          "email": "i@jhuang.me"
+          "email": "user5@example.com"
         }
       ],
       "homepage": "https://babel.dev/docs/en/next/babel-plugin-transform-exponentiation-operator",
@@ -224,7 +224,7 @@
       },
       "_npmUser": {
         "name": "nicolo-ribaudo",
-        "email": "nicolo.ribaudo@gmail.com"
+        "email": "user3@example.com"
       },
       "repository": {
         "url": "https://github.com/babel/babel.git",
@@ -317,19 +317,19 @@
       "maintainers": [
         {
           "name": "hzoo",
-          "email": "hi@henryzoo.com"
+          "email": "user1@example.com"
         },
         {
           "name": "existentialism",
-          "email": "bng412@gmail.com"
+          "email": "user2@example.com"
         },
         {
           "name": "nicolo-ribaudo",
-          "email": "nicolo.ribaudo@gmail.com"
+          "email": "user3@example.com"
         },
         {
           "name": "jlhwung",
-          "email": "jlhwung@gmail.com"
+          "email": "user4@example.com"
         }
       ],
       "_npmOperationalInternal": {

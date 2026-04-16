@@ -186,6 +186,7 @@ function matchNpmApi(urlString) {
     const dateRange = rangeMatch[1]
     const packageName = rangeMatch[2]
     const [start, end] = dateRange.split(':')
+    if (!start || !end) return null
 
     // Generate deterministic daily download data from the package name
     const seed = packageName.split('').reduce((s, c) => s + c.charCodeAt(0), 0)
@@ -193,13 +194,17 @@ function matchNpmApi(urlString) {
     const downloads = []
     const startDate = new Date(start)
     const endDate = new Date(end)
-    for (let d = new Date(startDate); d <= endDate; d.setUTCDate(d.getUTCDate() + 1)) {
-      const day = d.toISOString().slice(0, 10)
+    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) return null
+
+    const cursor = new Date(startDate)
+    while (cursor.getTime() <= endDate.getTime()) {
+      const day = cursor.toISOString().slice(0, 10)
       // Sine wave + noise for a realistic-looking sparkline
       const dayIndex = downloads.length
       const wave = Math.sin(dayIndex / 30) * base * 0.3
       const noise = Math.sin(dayIndex * 7 + seed) * base * 0.1
       downloads.push({ day, downloads: Math.max(0, Math.round(base + wave + noise)) })
+      cursor.setUTCDate(cursor.getUTCDate() + 1)
     }
 
     return json({ downloads, start, end, package: packageName })

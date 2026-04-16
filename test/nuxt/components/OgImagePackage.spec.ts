@@ -190,7 +190,6 @@ describe('OgImagePackage', () => {
       props: baseProps,
     })
 
-    expect(component.text()).toContain('test')
-    expect(component.text()).toContain('repo')
+    expect(component.text()).toContain('test/repo')
   })
 })
