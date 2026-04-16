@@ -3,16 +3,10 @@ const {
   handle,
   displayName = '',
   description = '',
-  avatar = '',
-  packageCount = 0,
-  orgCount = 0,
 } = defineProps<{
   handle: string
   displayName?: string
   description?: string
-  avatar?: string
-  packageCount?: number
-  orgCount?: number
 }>()
 
 const getInitials = (name: string) =>
@@ -23,13 +17,6 @@ const getInitials = (name: string) =>
     .join('')
     .toUpperCase()
     .slice(0, 2)
-
-const stats = computed(() => {
-  const items: string[] = []
-  if (packageCount > 0) items.push(`${packageCount} package${packageCount !== 1 ? 's' : ''}`)
-  if (orgCount > 0) items.push(`${orgCount} org${orgCount !== 1 ? 's' : ''}`)
-  return items.join(' · ')
-})
 </script>
 
 <template>
@@ -43,15 +30,7 @@ const stats = computed(() => {
           class="flex items-center justify-center rounded-full bg-bg-muted overflow-hidden shrink-0"
           :style="{ width: '96px', height: '96px' }"
         >
-          <img
-            v-if="avatar"
-            :src="avatar"
-            :alt="handle"
-            width="96"
-            height="96"
-            class="w-full h-full object-cover"
-          />
-          <span v-else class="text-8 text-fg-muted font-medium">
+          <span class="text-8 text-fg-muted font-medium">
             {{ getInitials(displayName || handle) }}
           </span>
         </span>
@@ -75,11 +54,6 @@ const stats = computed(() => {
         :style="{ lineClamp: 2, textOverflow: 'ellipsis' }"
       >
         {{ description }}
-      </div>
-
-      <!-- Stats -->
-      <div v-if="stats" class="text-3xl text-fg-muted">
-        {{ stats }}
       </div>
     </div>
   </OgLayout>
